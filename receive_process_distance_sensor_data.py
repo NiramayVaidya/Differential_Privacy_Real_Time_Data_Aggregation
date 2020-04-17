@@ -339,7 +339,7 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             elif x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_smape.png', \
+                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             else:
                 logging.error('Correct option for x-axis not provided to plot graphs')
@@ -411,7 +411,7 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             elif x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_smape.png', \
+                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             else:
                 logging.error('Correct option for x-axis not provided to plot graphs')
