@@ -107,6 +107,8 @@ def setup_argument_parser():
             help='pass single/multiple to plot graphs one per figure or group them to plot more than one per figure')
     parser.add_argument('--log-level', '-ll', type=str, required=True, \
             help='pass debug/info to set log level')
+    parser.add_argument('--from-file', '-ff', type=str, required=True, \
+            help='pass yes/no to use saved sensor values from a file or read new values from arduinos')
     return parser.parse_args()
 
 def get_arduino_ports():
@@ -347,7 +349,7 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             elif x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_smape.png', \
+                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             else:
                 logging.error('Correct option for x-axis not provided to plot graphs')
@@ -419,7 +421,7 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             elif x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_smape.png', \
+                plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape.png', \
                         bbox_inches='tight')
             else:
                 logging.error('Correct option for x-axis not provided to plot graphs')
@@ -1024,57 +1026,59 @@ if __name__ == '__main__':
     pe = args.plot_exectime
     pd = args.plot_distance
     pm = args.plot_mode
-    '''
-    ports = get_arduino_ports()
-    if not ports:
-        logging.error('Ports for Arduino not found')
-        sys.exit(0)
-    baudrate = 9600
-    timeout = 10
-    '''
+    from_file = args.from_file
     file_name_1 = 'distance_sensor_data_arduino_1.log'
     file_name_2 = 'distance_sensor_data_arduino_2.log'
-    '''
-    manager = Manager()
-    return_dict = manager.dict()
-    jobs = []
-    if args is not None:
-        if ve == 'yes' and vscnt == 'no':
-            # data_partial_1 = get_data(ports[0], baudrate, timeout, 've')
-            # data_partial_2 = get_data(ports[1], baudrate, timeout, 've')
-            process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 've', file_name_1))
-            process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 've', file_name_2))
-        elif ve == 'no' and vscnt == 'yes':
-            # data_partial_1 = get_data(ports[0], baudrate, timeout, 'vscnt')
-            # data_partial_2 = get_data(ports[1], baudrate, timeout, 'vscnt')
-            process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 'vscnt', file_name_1))
-            process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 'vscnt', file_name_2))
-        elif ve == 'no' and vscnt == 'no':
-            # data_partial_1 = get_data(ports[0], baudrate, timeout, 'nochg')
-            # data_partial_2 = get_data(ports[1], baudrate, timeout, 'nochg')
-            process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 'nochg', file_name_1))
-            process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 'nochg', file_name_2))
-        else:
-            logging.error('Correct combination of input paramaters not provided')
+    if from_file == 'yes':
+        with open(file_name_1, 'r') as file_desc_1:
+            data_partial_1 = file_desc_1.read()
+        with open(file_name_2, 'r') as file_desc_2:
+            data_partial_2 = file_desc_2.read()
+        if data_partial_1 is None or data_partial_2 is None:
+            logging.error('Read data is corrupt or mode is incorrect')
             sys.exit(0)
+    elif from_file == 'no':
+        ports = get_arduino_ports()
+        if not ports:
+            logging.error('Ports for Arduino not found')
+            sys.exit(0)
+        baudrate = 9600
+        timeout = 10
+        manager = Manager()
+        return_dict = manager.dict()
+        jobs = []
+        if args is not None:
+            if ve == 'yes' and vscnt == 'no':
+                # data_partial_1 = get_data(ports[0], baudrate, timeout, 've')
+                # data_partial_2 = get_data(ports[1], baudrate, timeout, 've')
+                process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 've', file_name_1))
+                process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 've', file_name_2))
+            elif ve == 'no' and vscnt == 'yes':
+                # data_partial_1 = get_data(ports[0], baudrate, timeout, 'vscnt')
+                # data_partial_2 = get_data(ports[1], baudrate, timeout, 'vscnt')
+                process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 'vscnt', file_name_1))
+                process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 'vscnt', file_name_2))
+            elif ve == 'no' and vscnt == 'no':
+                # data_partial_1 = get_data(ports[0], baudrate, timeout, 'nochg')
+                # data_partial_2 = get_data(ports[1], baudrate, timeout, 'nochg')
+                process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 'nochg', file_name_1))
+                process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 'nochg', file_name_2))
+            else:
+                logging.error('Correct combination of input paramaters not provided')
+                sys.exit(0)
+        else:
+            logging.error('Argument parser setup failed')
+            sys.exit(0)
+        jobs.append(process_1)
+        jobs.append(process_2)
+        process_1.start()
+        process_2.start()
+        for proc in jobs:
+            proc.join()
+        data_partial_1 = return_dict[1]
+        data_partial_2 = return_dict[2]
     else:
-        logging.error('Argument parser setup failed')
-        sys.exit(0)
-    jobs.append(process_1)
-    jobs.append(process_2)
-    process_1.start()
-    process_2.start()
-    for proc in jobs:
-        proc.join()
-    data_partial_1 = return_dict[0]
-    data_partial_2 = return_dict[1]
-    '''
-    with open(file_name_1, 'r') as file_desc_1:
-        data_partial_1 = file_desc_1.read()
-    with open(file_name_2, 'r') as file_desc_2:
-        data_partial_2 = file_desc_2.read()
-    if data_partial_1 is None or data_partial_2 is None:
-        logging.error('Read data is corrupt or mode is incorrect')
+        logging.error('Correct from file option not provided')
         sys.exit(0)
     data_partial_1 = data_partial_1.split('\n')
     data_partial_1.remove('')
