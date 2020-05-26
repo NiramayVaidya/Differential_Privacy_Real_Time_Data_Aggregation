@@ -3,7 +3,18 @@
 #include <mbedtls/aes.h>
 #include "uuid.h"
 
-#define HEART_RATE_COUNT 15
+#define HEART_RATE_MAX_COUNT 45
+
+#define CHG_EPS 1
+#define CHG_HRT_RATE_CNT 0
+#define EPS_CHG_STAGES 5
+#define HRT_RATE_CHG_STAGES 9
+
+int heartRateCount = HEART_RATE_MAX_COUNT;
+
+int heartRateReadCount = 0;
+
+bool sendOnSerial = true;
 
 const std::string miBandBleAddress = "e2:b8:17:da:9a:0f";
 
@@ -34,9 +45,6 @@ enum dflag {
 authenticationFlags	 authFlag;
 mbedtls_aes_context	aes;
 dflag stat = idle;
-
-int heartRateReadCount = 0;
-uint8_t heartRateValues[HEART_RATE_COUNT];
 
 static void notifyCallbackAuth(BLERemoteCharacteristic *pBLERemoteCharacteristic, uint8_t *pData, size_t len, bool isNotify) {
 	switch (pData[1]) {
@@ -73,9 +81,12 @@ static void notifyCallbackAuth(BLERemoteCharacteristic *pBLERemoteCharacteristic
 }
 
 static void notifyCallbackHeartRate(BLERemoteCharacteristic *pHRMMeasureCharacteristic, uint8_t *pData, size_t len, bool isNotify) {
-	stat = idle;
-  heartRateValues[heartRateReadCount] = pData[1];
   heartRateReadCount++;
+  Serial.printf("Heart rate value %d = %d\n", heartRateReadCount, pData[1]);
+  if (sendOnSerial) {
+    Serial2.println(pData[1]);
+  }
+  stat = idle;
 }
 
 class DeviceSearcher: public BLEAdvertisedDeviceCallbacks {
@@ -274,25 +285,56 @@ private:
 	BLERemoteDescriptor	*cccdHrm;
 };
 
+bool readAndValidateHrmReqFromSerial() {
+  // String str = Serial2.readStringUntil('\n');
+  String str = "";
+  char readByte;
+  do {
+    readByte = Serial2.read();
+    if ((readByte >= 'a' && readByte <= 'z') || (readByte >= 'A' && readByte <= 'Z') || (readByte >= '0' && readByte <= '9')) {
+     str += String(readByte);
+    }
+  } while (readByte != '\n');
+  Serial.printf("Received HRM req\n");
+  return str.equals("hrmReq");
+}
+
 MiBand2 miBand2(miBandBleAddress, key);
 
 void setup() {
 	Serial.begin(115200);
+  Serial2.begin(9600);
   Serial.printf("One shot mode loading\n");
 	BLEDevice::init("ESP-WROOM-32");
 	miBand2.init(30);
 }
 
 void loop() {
-  for (int i = 0; i < HEART_RATE_COUNT; i++) {
-    miBand2.startHrmOneShot();
-    delay(50);
-    while (stat != idle) {
-      delay(50);
+#if CHG_EPS
+  for (int i = 0; i < EPS_CHG_STAGES; i++) {
+#elif CHG_HRT_RATE_CNT
+  heartRateCount = 5;
+  for (int i = 0; i < HRT_RATE_CHG_STAGES; i++) {
+#endif
+    Serial.printf("Waiting for HRM req\n");
+    if (!readAndValidateHrmReqFromSerial()) {
+      Serial.printf("Read/Validate for HRM req failed\n");
+      sendOnSerial = false;
     }
-  }
-  for (int i = 0; i < HEART_RATE_COUNT; i++) {
-    Serial.printf("Heart rate value %d = %d\n", i + 1, heartRateValues[i]);
+    else {
+      Serial.printf("Read and validate for HRM req succeeded\n");
+    }
+    for (int j = 0; j < heartRateCount; j++) {
+      miBand2.startHrmOneShot();
+      while (stat != idle) {
+        delay(50);
+      }
+    }
+    heartRateReadCount = 0;
+#if CHG_HRT_RATE_CNT
+    heartRateCount += 5;
+#endif
+    delay(50);
   }
 	miBand2.deinit();
 	delay(5000);
