@@ -1,6 +1,6 @@
 '''
 This code is for collecting data upon uploading
-ultrasonic_distance_sensor_dp_testing_multiple code to Arduino
+ultrasonic_distance_sensor_dp_testing_multiple_blue/green_arduino codes to the Arduinos
 and plotting utility, execution time and distance value graphs
 
 Set DEBUG and INFO to 0,
@@ -1064,7 +1064,7 @@ if __name__ == '__main__':
                 process_1 = Process(target=get_data, args=(1, return_dict, ports[0], baudrate, timeout, 'nochg', file_name_1))
                 process_2 = Process(target=get_data, args=(2, return_dict, ports[1], baudrate, timeout, 'nochg', file_name_2))
             else:
-                logging.error('Correct combination of input paramaters not provided')
+                logging.error('Correct combination of input parameters not provided')
                 sys.exit(0)
         else:
             logging.error('Argument parser setup failed')

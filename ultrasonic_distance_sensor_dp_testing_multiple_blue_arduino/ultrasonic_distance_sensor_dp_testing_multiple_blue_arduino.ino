@@ -9,8 +9,8 @@
 
 #define MAXSENSORCNT 45
 
-#define CHGEPS 0
-#define CHGSENSORCNT 1
+#define CHGEPS 1
+#define CHGSENSORCNT 0
 
 SoftwareSerial mySoftwareSerial(6, 7);
 
@@ -46,7 +46,7 @@ float readFloatFromSerial(void) {
 }
 
 float exp_sample(float scale) {
-  return -scale * log(random(1, 100) / 99.9);
+  return -scale * log(random(1, 500) / 499.0);
 }
 
 float laplace(float scale) {
@@ -54,8 +54,8 @@ float laplace(float scale) {
 }
 
 float gaussian(float u, float var) {
-  float r1 = random(0, 500) / 499.0;
-  float r2 = random(0, 500) / 499.0;
+  float r1 = random(1, 500) / 499.0;
+  float r2 = random(1, 500) / 499.0;
   return u + var * cos(2 * PI * r1) * sqrt(-2 * log(r2));
 }
 
@@ -192,7 +192,7 @@ void loop() {
   int startTime, endTime;
   float centralSumLaplace, centralSumGaussian;
 #if INFO
-  // mySerial.printf("Sensitivity value for summation operation: %.2f\n", sensitivitySummation);
+  mySerial.printf("Sensitivity value for summation operation: %.2f\n", sensitivitySummation);
 #else
   mySerial.printf("%.2f\n", sensitivitySummation);
 #endif
@@ -204,18 +204,18 @@ void loop() {
 #endif
 #elif CHGEPS
 #if INFO
-  // mySerial.printf("Number of sensors: %d\n", sensorCount);
+  mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
   mySerial.printf("%d\n", sensorCount);
 #endif
 #else
 #if INFO
-  // mySerial.printf("Epsilon value: %.2f\n");
+  mySerial.printf("Epsilon value: %.2f\n");
 #else
   mySerial.printf("%.2f\n", epsilon);
 #endif
 #if INFO
-  // mySerial.printf("Number of sensors: %d\n", sensorCount);
+  mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
   mySerial.printf("%d\n", sensorCount);
 #endif
@@ -235,7 +235,7 @@ void loop() {
   sensorCount = 5;
   while (sensorCount != 50) {
 #if INFO
-    // mySerial.printf("Number of sensors: %d\n", sensorCount);
+    mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
     mySerial.printf("%d\n", sensorCount);
 #endif
@@ -261,7 +261,7 @@ void loop() {
       delay(500);
     }
 #if INFO
-    // mySerial.printf("Partial sum of distance (in cm) before noise addition: %.2f\n", partialDistanceSum);
+    mySerial.printf("Partial sum of distance (in cm) before noise addition: %.2f\n", partialDistanceSum);
 #else
     mySerial.printf("%.2f\n", partialDistanceSum);
 #endif
@@ -271,7 +271,7 @@ void loop() {
     execTimeTotalLaplace = endTime - startTime - communicationTime;
     delay(500);
 #if INFO
-    // mySerial.printf("Partial sum of distance (in cm) after noise addition using laplace after splitting: %.2f\n", partialDistanceSum);
+    mySerial.printf("Partial sum of distance (in cm) after noise addition using laplace after splitting: %.2f\n", partialDistanceSum);
 #else
     mySerial.printf("%.2f\n", partialDistanceSum);
 #endif
@@ -281,7 +281,7 @@ void loop() {
     execTimeTotalGaussian = endTime - startTime - communicationTime;
     delay(500);
 #if INFO
-    // mySerial.printf("Partial sum of distance (in cm) after noise addition using gaussian after splitting: %.2f\n", partialDistanceSum);
+    mySerial.printf("Partial sum of distance (in cm) after noise addition using gaussian after splitting: %.2f\n", partialDistanceSum);
 #else
     mySerial.printf("%.2f\n", partialDistanceSum);
 #endif
@@ -300,8 +300,9 @@ void loop() {
     delay(500);
 #if INFO
     // mySerial.printf("Execution time (in microseconds) for splitting: %.2f\n", abs(execTimeSplit));
-#endif
+#else
     mySerial.printf("%.2f\n", abs(execTimeSplit));
+#endif
     delay(500);
 #if INFO
     // mySerial.printf("Execution time (in microseconds) for noise addition after splitting: %.2f\n", abs(execTimeNoiseAddAfterSplit));

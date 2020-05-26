@@ -168,7 +168,7 @@ void loop() {
   int startTime, endTime;
   float centralSumLaplace, centralSumGaussian;
 #if INFO
-  // mySerial.printf("Sensitivity value for summation operation: %.2f\n", sensitivitySummation);
+  mySerial.printf("Sensitivity value for summation operation: %.2f\n", sensitivitySummation);
 #else
   mySerial.printf("%.2f\n", sensitivitySummation);
 #endif
@@ -180,18 +180,18 @@ void loop() {
 #endif
 #elif CHGEPS
 #if INFO
-  // mySerial.printf("Number of sensors: %d\n", sensorCount);
+  mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
   mySerial.printf("%d\n", sensorCount);
 #endif
 #else
 #if INFO
-  // mySerial.printf("Epsilon value: %.2f\n");
+  mySerial.printf("Epsilon value: %.2f\n");
 #else
   mySerial.printf("%.2f\n", epsilon);
 #endif
 #if INFO
-  // mySerial.printf("Number of sensors: %d\n", sensorCount);
+  mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
   mySerial.printf("%d\n", sensorCount);
 #endif
@@ -211,7 +211,7 @@ void loop() {
   sensorCount = 5;
   while (sensorCount != 50) {
 #if INFO
-    // mySerial.printf("Number of sensors: %d\n", sensorCount);
+    mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
     mySerial.printf("%d\n", sensorCount);
 #endif
@@ -271,7 +271,7 @@ void loop() {
     execTimeTotalGaussian = endTime - startTime;
     delay(500);
 #if INFO
-    // mySerial.printf("Sum of distance (in cm) after noise addition using gaussian after splitting and post summation: %.2f\n", finalDistanceSum);
+    mySerial.printf("Sum of distance (in cm) after noise addition using gaussian after splitting and post summation: %.2f\n", finalDistanceSum);
 #else
     mySerial.printf("%.2f\n", finalDistanceSum);
 #endif
@@ -290,8 +290,9 @@ void loop() {
     delay(500);
 #if INFO
     // mySerial.printf("Execution time (in microseconds) for splitting: %.2f\n", abs(execTimeSplit));
-#endif
+#else
     mySerial.printf("%.2f\n", abs(execTimeSplit));
+#endif
     delay(500);
 #if INFO
     // mySerial.printf("Execution time (in microseconds) for noise addition after splitting: %.2f\n", abs(execTimeNoiseAddAfterSplit));

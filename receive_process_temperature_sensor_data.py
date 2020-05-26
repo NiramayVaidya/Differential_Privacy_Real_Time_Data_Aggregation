@@ -1110,7 +1110,7 @@ if __name__ == '__main__':
         elif ve == 'no' and vscnt == 'no':
             data = get_data(port, baudrate, timeout, 'nochg')
         else:
-            logging.error('Correct combination of input paramaters not provided')
+            logging.error('Correct combination of input parameters not provided')
             sys.exit(0)
     else:
         logging.error('Argument parser setup failed')
