@@ -1,6 +1,6 @@
 '''
 This code is for collecting data upon uploading
-miband2_esp32_heart_rate_dp_testing_multiple code to Arduino
+miband2_esp32_heart_rate_dp_testing_multiple or xd58c_pulse_sensor_heart_rate_dp_testing_multiple code to Arduino
 and plotting utility, execution time and heart rate value graphs
 
 Set DEBUG and INFO to 0,
@@ -64,7 +64,7 @@ def setup_logging_config(log_level):
         print('Correct log level not provided')
         sys.exit(0)
     log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(funcName)s: %(message)s')
-    file_handler = logging.FileHandler('heart_rate_miband2_data.log', mode='a')
+    file_handler = logging.FileHandler('heart_rate_miband2_xd58c_data.log', mode='a')
     file_handler.setFormatter(log_formatter)
     logger.addHandler(file_handler)
     console_handler = logging.StreamHandler(sys.stdout)
@@ -1100,11 +1100,11 @@ if __name__ == '__main__':
     pm = args.plot_mode
     from_file = args.from_file
     if ve == 'yes' and vscnt == 'no':
-        file_name = 'heart_rate_miband_data_arduino_ve.log'
+        file_name = 'heart_rate_miband2_xd58c_data_arduino_ve.log'
     elif ve == 'no' and vscnt == 'yes':
-        file_name = 'heart_rate_miband_data_arduino_vscnt.log'
+        file_name = 'heart_rate_miband2_xd58c_data_arduino_vscnt.log'
     elif ve == 'no' and vscnt == 'no':
-        file_name = 'heart_rate_miband_data_arduino.log'
+        file_name = 'heart_rate_miband2_xd58c_data_arduino.log'
     else:
         logging.error('Correct combination of input parameters not provided')
         sys.exit(0)
