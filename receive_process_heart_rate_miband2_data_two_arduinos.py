@@ -1036,8 +1036,6 @@ if __name__ == '__main__':
     else:
         logging.error('Correct combination of input parameters not provided')
         sys.exit(0)
-    file_name_1 = 'heart_rate_miband2_data_arduino_1.log'
-    file_name_2 = 'heart_rate_miband2_data_arduino_2.log'
     if from_file == 'yes':
         with open(file_name_1, 'r') as file_desc_1:
             data_partial_1 = file_desc_1.read()
