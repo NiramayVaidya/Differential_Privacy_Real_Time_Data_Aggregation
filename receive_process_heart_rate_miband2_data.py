@@ -1069,7 +1069,7 @@ def plot_heart_rate_graphs(heart_rate_values, x_axis_values, x_axis):
         logging.error('Correct option for x-axis not provided to plot graphs')
         sys.exit(0)
     heart_rate.set_ylabel('heart rate in beats per minute')
-    heart_rate.set_title('Distance measured', fontweight='bold')
+    heart_rate.set_title('Heart rate measured', fontweight='bold')
     fig.legend(labels=['actual', \
             'central method laplace', 'central method gaussian', \
             'split method laplace', 'split method gaussian'], \
@@ -1099,7 +1099,15 @@ if __name__ == '__main__':
     phr = args.plot_heart_rate
     pm = args.plot_mode
     from_file = args.from_file
-    file_name = 'heart_rate_miband_data_arduino.log'
+    if ve == 'yes' and vscnt == 'no':
+        file_name = 'heart_rate_miband_data_arduino_ve.log'
+    elif ve == 'no' and vscnt == 'yes':
+        file_name = 'heart_rate_miband_data_arduino_vscnt.log'
+    elif ve == 'no' and vscnt == 'no':
+        file_name = 'heart_rate_miband_data_arduino.log'
+    else:
+        logging.error('Correct combination of input parameters not provided')
+        sys.exit(0)
     if from_file == 'yes':
         with open(file_name, 'r') as file_desc:
             data = file_desc.read()

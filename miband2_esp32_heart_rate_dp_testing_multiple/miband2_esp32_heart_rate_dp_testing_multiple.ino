@@ -57,7 +57,7 @@ void addNoiseHeartRate(char noiseType) {
   }
   else {
     for (i = 0; i < sensorCount; i++) {
-      heartRateDpNoise[i] = heartRate[i];
+      heartRateDpNoise[i] = (float)heartRate[i];
     }
   }
 }
@@ -86,6 +86,9 @@ void addNoiseHeartRateSplits(void) {
     noiseMag = (heartRate[i] / splitCount) * magScale;
     for (j = 0; j < splitCount; j++) {
       noiseLarge = random(-(int)noiseMag, (int)noiseMag) / (2.0 * sqrt(noiseMag));
+      if (isnan(noiseLarge)) {
+        noiseLarge = 0.0;
+      }
       heartRateSplit[i][j] += noiseLarge;
       totalRandom += noiseLarge;
     }
