@@ -12,7 +12,7 @@
 #define CHGEPS 1
 #define CHGSENSORCNT 0
 
-SoftwareSerial mySoftwareSerial(6, 7);
+SoftwareSerial mySoftwareSerial(8, 9);
 SoftwareSerial mySoftwareSerialAnother(2, 3);
 
 StreamEx mySerial = Serial;
@@ -22,10 +22,10 @@ int sensorCount = MAXSENSORCNT;
 int heartRate[MAXSENSORCNT];
 float heartRateFraction, partialHeartRateSum, heartRateSplit[MAXSENSORCNT][splitCount], heartRateDpNoise[MAXSENSORCNT];
 
-float execTimeNoiseAddBeforeSplitLaplace, execTimeNoiseAddBeforeSplitGaussian;
-float execTimeSplit, execTimeNoiseAddAfterSplit, execTimePartialSums;
-float execTimeTotalLaplace, execTimeTotalGaussian;
-float communicationTime;
+int execTimeNoiseAddBeforeSplitLaplace, execTimeNoiseAddBeforeSplitGaussian;
+int execTimeSplit, execTimeNoiseAddAfterSplit, execTimePartialSums;
+int execTimeTotalLaplace, execTimeTotalGaussian;
+int communicationTime;
 
 float epsilon = 0.1;
 const float sensitivitySummation = 220.0;
@@ -37,6 +37,7 @@ float readFloatFromSerial(void) {
   do {
     readByte = mySoftwareSerial.read();
     if ((int)readByte != -1) {
+    
      floatStr += String(readByte);
     }
   } while (readByte != '\n');
@@ -176,9 +177,11 @@ void algorithm(char noiseType) {
   for (i = 0; i < sensorCount; i++) {
     mySoftwareSerial.println(heartRateSplit[i][1]);
   }
+  mySoftwareSerial.begin(4800);
   for (i = 0; i < sensorCount; i++) {
     heartRateSplit[i][1] = readFloatFromSerial();
   }
+  mySoftwareSerial.begin(2400);
   delay(500);
 #if DEBUG
   for (i = 0; i < sensorCount; i++) {
@@ -194,15 +197,14 @@ void algorithm(char noiseType) {
 }
 
 void setup() {
-  Serial.begin(115200);
-  mySoftwareSerial.begin(9600);
+  Serial.begin(9600);
+  mySoftwareSerial.begin(2400);
   mySoftwareSerialAnother.begin(9600);
 }
 
 void loop() {
   int i;
   int startTime, endTime;
-  float centralSumLaplace, centralSumGaussian;
 #if INFO
   mySerial.printf("Sensitivity value for summation operation: %.2f\n", sensitivitySummation);
 #else
@@ -258,13 +260,14 @@ void loop() {
     i = 0;
     partialHeartRateSum = 0.0;
     randomSeed(analogRead(5));
-#if INFO
+#if DEBUG
     Serial.println("Sending HRM req");
 #endif
     mySoftwareSerialAnother.println("hrmReq");
-#if INFO
+#if DEBUG
     Serial.println("Sent HRM req");
 #endif
+    mySoftwareSerialAnother.begin(9600);
     while (i++ != sensorCount) {
       heartRate[i - 1] = readIntFromSerial();    
       partialHeartRateSum += (float)heartRate[i - 1];
@@ -274,9 +277,9 @@ void loop() {
       delay(500);
     }
 #if INFO
-    mySerial.printf("Partial sum of heart rate (in bpm) before noise addition: %.2f\n", partialHeartRateSum);
+    mySerial.printf("Partial sum of heart rate (in bpm) before noise addition: %d\n", (int)partialHeartRateSum);
 #else
-    mySerial.printf("%.2f\n", partialHeartRateSum);
+    mySerial.printf("%d\n", (int)partialHeartRateSum);
 #endif
     startTime = micros();
     algorithm('l');
@@ -300,45 +303,45 @@ void loop() {
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for noise addition using laplace before splitting: %.2f\n", abs(execTimeNoiseAddBeforeSplitLaplace));
+    // mySerial.printf("Execution time (in microseconds) for noise addition using laplace before splitting: %d\n", abs(execTimeNoiseAddBeforeSplitLaplace));
 #else
-    mySerial.printf("%.2f\n", abs(execTimeNoiseAddBeforeSplitLaplace));
+    mySerial.printf("%d\n", abs(execTimeNoiseAddBeforeSplitLaplace));
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for noise addition using gaussian before splitting: %.2f\n", abs(execTimeNoiseAddBeforeSplitGaussian));
+    // mySerial.printf("Execution time (in microseconds) for noise addition using gaussian before splitting: %d\n", abs(execTimeNoiseAddBeforeSplitGaussian));
 #else
-    mySerial.printf("%.2f\n", abs(execTimeNoiseAddBeforeSplitGaussian));
+    mySerial.printf("%d\n", abs(execTimeNoiseAddBeforeSplitGaussian));
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for splitting: %.2f\n", abs(execTimeSplit));
+    // mySerial.printf("Execution time (in microseconds) for splitting: %d\n", abs(execTimeSplit));
 #else
-    mySerial.printf("%.2f\n", abs(execTimeSplit));
+    mySerial.printf("%d\n", abs(execTimeSplit));
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for noise addition after splitting: %.2f\n", abs(execTimeNoiseAddAfterSplit));
+    // mySerial.printf("Execution time (in microseconds) for noise addition after splitting: %d\n", abs(execTimeNoiseAddAfterSplit));
 #else
-    mySerial.printf("%.2f\n", abs(execTimeNoiseAddAfterSplit));
+    mySerial.printf("%d\n", abs(execTimeNoiseAddAfterSplit));
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for partial summations: %.2f\n", abs(execTimePartialSums));
+    // mySerial.printf("Execution time (in microseconds) for partial summations: %d\n", abs(execTimePartialSums));
 #else
-    mySerial.printf("%.2f\n", abs(execTimePartialSums));
+    mySerial.printf("%d\n", abs(execTimePartialSums));
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for the complete algorithm using laplace: %.2f\n", abs(execTimeTotalLaplace));
+    // mySerial.printf("Execution time (in microseconds) for the complete algorithm using laplace: %d\n", abs(execTimeTotalLaplace));
 #else
-    mySerial.printf("%.2f\n", abs(execTimeTotalLaplace));
+    mySerial.printf("%d\n", abs(execTimeTotalLaplace));
 #endif
     delay(500);
 #if INFO
-    // mySerial.printf("Execution time (in microseconds) for the complete algorithm using gaussian: %.2f\n", abs(execTimeTotalGaussian));
+    // mySerial.printf("Execution time (in microseconds) for the complete algorithm using gaussian: %d\n", abs(execTimeTotalGaussian));
 #else
-    mySerial.printf("%.2f\n", abs(execTimeTotalGaussian));
+    mySerial.printf("%d\n", abs(execTimeTotalGaussian));
 #endif
     delay(500);
 #if CHGEPS

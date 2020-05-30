@@ -1050,7 +1050,7 @@ if __name__ == '__main__':
         if not ports:
             logging.error('Ports for Arduino not found')
             sys.exit(0)
-        baudrate = 11520
+        baudrate = 9600
         timeout = 10
         manager = Manager()
         return_dict = manager.dict()
