@@ -51,10 +51,10 @@ num_of_heart_rate_sum_values = 5
 num_of_exec_time_values = 7
 num_of_total_values = num_of_heart_rate_sum_values + num_of_exec_time_values
 min_epsilon = 0.0
-max_epsilon = 2.0
+max_epsilon = 2.0 # 1.0
 epsilon_step = 0.5
 min_sensor_count = 10
-max_sensor_count = 90
+max_sensor_count = 90 # 30, 50, 70
 sensor_count_step = 10
 
 def exp_sample(mean):
@@ -141,16 +141,21 @@ def get_data(process_num, return_dict, port, baudrate, timeout, mode, file_name)
                 (num_of_heart_rate_sum_values - 2) + num_of_exec_time_values
     else:
         return_dict[process_num] = None
+    print('process : ' + str(process_num) + ', max_newline_count -> ' + str(max_newline_count))
     full_data = ''
     file_desc = open(file_name, 'w')
     while connection.isOpen() is True:
         try:
+            print('process : ' + str(process_num) + ' Reading data...')
             data = connection.read().decode('utf-8')
+            print('process : ' + str(process_num) + ' Read data')
             print(data, end='', flush=True, file=file_desc)
             full_data += data
             if data == '\n':
                 newline_count += 1
+            print('process : ' + str(process_num) + ', newline_count -> ' + str(newline_count))
             if newline_count == max_newline_count:
+                print('newline_count == max_newline_count')
                 break
         except KeyboardInterrupt:
             connection.close()

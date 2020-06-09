@@ -11,10 +11,10 @@
 #define DEBUG 0
 #define INFO 0
 
-#define MAXSENSORCNT 45
+#define MAXSENSORCNT 45 // 5
 
-#define CHGEPS 1
-#define CHGSENSORCNT 0
+#define CHGEPS 0
+#define CHGSENSORCNT 1
 
 const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PULSE_INPUT = A0;
@@ -249,18 +249,18 @@ void loop() {
 #endif
 #if CHGEPS
   epsilon = 0.0;
-  while ((int)(epsilon + 0.5) != 3) {
+  while ((int)(epsilon + 0.5) != 3) { // 2
 #if INFO
     mySerial.printf("Epsilon value: %.2f\n", epsilon);
 #else
     mySerial.printf("%.2f\n", epsilon);
+#endif
     if ((int)(epsilon * 10) == 0) {
         epsilon = 0.1;
     }
-#endif
 #elif CHGSENSORCNT
   sensorCount = 5;
-  while (sensorCount != 50) {
+  while (sensorCount != 50) { // 20, 30, 40
 #if INFO
     mySerial.printf("Number of sensors: %d\n", sensorCount);
 #else
@@ -291,6 +291,7 @@ void loop() {
 #endif
       delay(500);
     }
+    Serial.begin(9600);
 #if INFO
     mySerial.printf("Partial sum of heart rate (in bpm) before noise addition: %d\n", (int)partialHeartRateSum);
 #else

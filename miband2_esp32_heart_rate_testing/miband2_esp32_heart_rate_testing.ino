@@ -3,12 +3,12 @@
 #include <mbedtls/aes.h>
 #include "uuid.h"
 
-#define HEART_RATE_MAX_COUNT 45
+#define HEART_RATE_MAX_COUNT 45 // 5
 
-#define CHG_EPS 1
-#define CHG_HRT_RATE_CNT 0
-#define EPS_CHG_STAGES 5
-#define HRT_RATE_CHG_STAGES 9
+#define CHG_EPS 0
+#define CHG_HRT_RATE_CNT 1
+#define EPS_CHG_STAGES 5 // 3
+#define HRT_RATE_CHG_STAGES 9 // 3, 5, 7
 
 int heartRateCount = HEART_RATE_MAX_COUNT;
 
@@ -336,6 +336,7 @@ void loop() {
 #endif
     delay(50);
   }
+  delay(50000);
 	miBand2.deinit();
 	delay(5000);
 	esp_deep_sleep_start();
