@@ -263,7 +263,6 @@ def create_utility_lists(heart_rate_values):
 
 def create_plot_single():
     fig = plt.figure(figsize=(14, 10))
-    fig.subplots_adjust(bottom=0.25)
     return fig, fig.add_subplot(111)
 
 def plot_line_graphs(util_type, x_axis_values, \
@@ -291,49 +290,43 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
     mmape_util_laplace, mmape_util_gaussian, \
     x_axis_values, operation, x_axis, plot_mode):
     '''
-    graph 1 -> utility in MAPE vs number of sensors / epsilon
+    graph 1 -> utility in MAPE vs number of sensors / epsilon values
             -> central method - laplace and gaussian
             -> split method - laplace and gaussian
-    graph 2 -> utility in SMAPE vs number of sensors / epsilon
+    graph 2 -> utility in SMAPE vs number of sensors / epsilon values
             -> central method - laplace and gaussian
             -> split method - laplace and gaussian
-    graph 3 -> utility in MMAPE vs number of sensors / epsilon
+    graph 3 -> utility in MMAPE vs number of sensors / epsilon values
             -> central method - laplace and gaussian
             -> split method - laplace and gaussian
-    graph 4 -> utility in log(MMAPE) vs number of sensors / epsilon
+    graph 4 -> utility in log(MMAPE) vs number of sensors / epsilon values
             -> central method - laplace and gaussian
             -> split method - laplace and gaussian
     '''
     if plot_mode == 'single':
+        plt.rcParams.update({'font.size': 20})
+        if x_axis == 'e':
+            plt_savefig_path = 'plots/changing_epsilon/single/'
+        elif x_axis == 's':
+            plt_savefig_path = 'plots/changing_sensor_count/single/'
+        else:
+            logging.error('Correct option for x-axis not provided to plot graphs')
+            sys.exit(0)
         if mape_util_laplace is None or mape_util_gaussian is None:
             fig, smape = create_plot_single()
             plot_line_graphs(smape, x_axis_values, \
                 smape_util_laplace, smape_util_gaussian, x_axis, \
                 'utility in SMAPE', 'SMAPE utility')
             handles, labels = smape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_smape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_smape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_smape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_smape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            smape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_smape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_smape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
@@ -344,29 +337,15 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 mmape_util_laplace, mmape_util_gaussian, x_axis, \
                 'utility in MMAPE', 'MAPE utility')
             handles, labels = mmape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            mmape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_mmape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_mmape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
@@ -384,29 +363,15 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 for value in mmape_util_gaussian[1]]], \
                 x_axis, 'utility in log(MMAPE)', 'MMAPE utility')
             handles, labels = log_mmape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            log_mmape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_log_mmape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_log_mmape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
@@ -418,29 +383,15 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 mape_util_laplace, mape_util_gaussian, x_axis, \
                 'utility in MAPE', 'MAPE utility')
             handles, labels = mape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_mape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_mape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_mape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_mape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            mape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_mape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_mape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
@@ -451,29 +402,15 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 smape_util_laplace, smape_util_gaussian, x_axis, \
                 'utility in SMAPE', 'SMAPE utility')
             handles, labels = smape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_smape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_smape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_smape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_smape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            smape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_smape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_smape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
@@ -484,29 +421,15 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 mmape_util_laplace, mmape_util_gaussian, x_axis, \
                 'utility in MMAPE', 'MMAPE utility')
             handles, labels = mmape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            mmape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_mmape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_mmape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
@@ -524,35 +447,29 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 for value in mmape_util_gaussian[1]]], \
                 x_axis, 'utility in log(MMAPE)', 'MMAPE utility')
             handles, labels = log_mmape.get_legend_handles_labels()
-            fig.legend(handles, labels, loc='lower center')
-            if x_axis == 'e':
-                if operation == 's':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_epsilon/single/utility_graph_log_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
-            elif x_axis == 's':
-                if operation == 's':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape.png', \
-                        bbox_inches='tight')
-                elif operation == 'a':
-                    plt.savefig('plots/changing_sensor_count/single/utility_graph_log_mmape_new.png', \
-                        bbox_inches='tight')
-                else:
-                    logging.error('Correct option for operation not provided to plot graphs')
-                    sys.exit(0)
+            log_mmape.legend(handles, labels, loc='upper right')
+            if operation == 's':
+                plt.savefig(plt_savefig_path + 'utility_graph_log_mmape.png', \
+                    bbox_inches='tight')
+            elif operation == 'a':
+                plt.savefig(plt_savefig_path + 'utility_graph_log_mmape_new.png', \
+                    bbox_inches='tight')
             else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
+                logging.error('Correct option for operation not provided to plot graphs')
                 sys.exit(0)
             if operation == 's':
                 plt.show()
             elif operation == 'a':
                 plt.close(fig)
     elif plot_mode == 'multiple':
+        plt.rcParams.update({'font.size': 10})
+        if x_axis == 'e':
+            plt_savefig_path = 'plots/changing_epsilon/multiple/'
+        elif x_axis == 's':
+            plt_savefig_path = 'plots/changing_sensor_count/multiple/'
+        else:
+            logging.error('Correct option for x-axis not provided to plot graphs')
+            sys.exit(0)
         fig = plt.figure(figsize=(14, 10))
         fig.subplots_adjust(bottom=0.2, wspace=0.6, hspace=0.6)
         if mape_util_laplace is None or mape_util_gaussian is None:
@@ -602,28 +519,14 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
                 x_axis, 'utility in log(MMAPE)', 'MMAPE utility')
             handles, labels = mape.get_legend_handles_labels()
         fig.legend(handles, labels, loc='lower center')
-        if x_axis == 'e':
-            if operation == 's':
-                plt.savefig('plots/changing_epsilon/multiple/utility_graphs.png', \
-                    bbox_inches='tight')
-            elif operation == 'a':
-                plt.savefig('plots/changing_epsilon/multiple/utility_graphs_new.png', \
-                    bbox_inches='tight')
-            else:
-                logging.error('Correct option for operation not provided to plot graphs')
-                sys.exit(0)
-        elif x_axis == 's':
-            if operation == 's':
-                plt.savefig('plots/changing_sensor_count/multiple/utility_graphs.png', \
-                    bbox_inches='tight')
-            elif operation == 'a':
-                plt.savefig('plots/changing_sensor_count/multiple/utility_graphs_new.png', \
-                    bbox_inches='tight')
-            else:
-                logging.error('Correct option for operation not provided to plot graphs')
-                sys.exit(0)
+        if operation == 's':
+            plt.savefig(plt_savefig_path + 'utility_graphs.png', \
+                bbox_inches='tight')
+        elif operation == 'a':
+            plt.savefig(plt_savefig_path + 'utility_graphs_new.png', \
+                bbox_inches='tight')
         else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
+            logging.error('Correct option for operation not provided to plot graphs')
             sys.exit(0)
         if operation == 's':
             plt.show()
@@ -633,157 +536,167 @@ def plot_utility_graphs(mape_util_laplace, mape_util_gaussian, \
         logging.error('Correct option for plot mode not provided to plot graphs')
         sys.exit(0)
 
+def autolabel(rects, ax, rot_angle, bar_plt_val_fontsize):
+    for rect in rects:
+        height = int(rect.get_height())
+        if height < 0:
+            if int(abs(height) / 1000) == 0:
+                if bar_plt_val_fontsize == 10:
+                    xytext = (0, -25)
+                elif bar_plt_val_fontsize == 5:
+                    xytext = (0, -15)
+            else:
+                if bar_plt_val_fontsize == 10:
+                    xytext = (0, -30)
+                elif bar_plt_val_fontsize == 5:
+                    xytext = (0, -20)
+        else:
+            xytext = (0, 5)
+        ax.annotate(height,
+            xy=(rect.get_x() + rect.get_width() / 2, height), \
+            xytext=xytext, \
+            textcoords='offset points', \
+            ha='center', va='bottom', \
+            rotation=(rot_angle), fontsize=bar_plt_val_fontsize)
+
 def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
     '''
-    graph 1 -> execution time in microseconds vs number of sensors / epsilon
+    graph 1 -> execution time in microseconds vs number of sensors / epsilon values
             -> noise addition before splitting - laplace and gaussian
-    graph 2 -> execution time in microseconds vs number of sensors / epsilon
+    graph 2 -> execution time in microseconds vs number of sensors / epsilon values
             -> for splitting
-    graph 3 -> execution time in microseconds vs number of sensors / epsilon
+    graph 3 -> execution time in microseconds vs number of sensors / epsilon values
             -> noise addition after splitting
-    graph 4 -> execution time in microseconds vs number of sensors / epsilon
+    graph 4 -> execution time in microseconds vs number of sensors / epsilon values
             -> for partial summations
-    graph 5 -> execution time in microseconds vs number of sensors / epsilon
+    graph 5 -> execution time in microseconds vs number of sensors / epsilon values
             -> complete algorithm - laplace and gaussian
     '''
     if len(x_axis_values) == (max_epsilon / epsilon_step) + 1:
         width = 0.1
     elif len(x_axis_values) == max_sensor_count / sensor_count_step:
-        width = 1.25
+        width = 2.75
     else:
         width = 0.75
     if plot_mode == 'single':
-        fig, exec_time_noise_add_before_split = create_plot_single()
-        exec_time_noise_add_before_split.bar(x_axis_values, exec_times[0], \
-            width=-width, color='b', align='edge')
-        exec_time_noise_add_before_split.bar(x_axis_values, exec_times[1], \
-            width=width, color='r', align='edge')
+        plt.rcParams.update({'font.size': 20})
         if x_axis == 'e':
-            exec_time_noise_add_before_split.set_xlabel('epsilon value')
+            legend_loc = 'lower center'
+            x_label = 'epsilon value'
+            plt_savefig_path = 'plots/changing_epsilon/single/'
         elif x_axis == 's':
-            exec_time_noise_add_before_split.set_xlabel('number of sensors')
+            legend_loc = 'upper left'
+            x_label = 'number of sensors'
+            plt_savefig_path = 'plots/changing_sensor_count/single/'
         else:
             logging.error('Correct option for x-axis not provided to plot graphs')
             sys.exit(0)
+        fig, exec_time_noise_add_before_split = create_plot_single()
+        if x_axis == 'e':
+            fig.subplots_adjust(bottom=0.28)
+        rects = exec_time_noise_add_before_split.bar(x_axis_values, exec_times[0], \
+            width=-width, color='b', align='edge')
+        autolabel(rects, exec_time_noise_add_before_split, 90, 10)
+        rects = exec_time_noise_add_before_split.bar(x_axis_values, exec_times[1], \
+            width=width, color='r', align='edge')
+        autolabel(rects, exec_time_noise_add_before_split, 90, 10)
+        exec_time_noise_add_before_split.set_xlabel(x_label)
         exec_time_noise_add_before_split.set_ylabel('execution time\nin microseconds')
         exec_time_noise_add_before_split.set_title('Execution time\nfor noise addition before splitting', \
             loc='center', pad=20, fontweight='bold')
-        fig.legend(labels=['laplace', 'gaussian'], loc='lower center')
         if x_axis == 'e':
-            plt.savefig('plots/changing_epsilon/single/exec_time_graph_noise_add_before_split.png', \
-                bbox_inches='tight')
+            fig.legend(labels=['laplace', 'gaussian'], loc=legend_loc)
         elif x_axis == 's':
-            plt.savefig('plots/changing_sensor_count/single/exec_time_graph_noise_add_before_split.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            exec_time_noise_add_before_split.legend(labels=['laplace', 'gaussian'], loc=legend_loc)
+        plt.savefig(plt_savefig_path + 'exec_time_graph_noise_add_before_split.png', \
+            bbox_inches='tight')
         plt.show()
         fig, exec_time_for_split = create_plot_single()
-        exec_time_for_split.bar(x_axis_values, exec_times[2], \
-            width=width, color='g', align='center')
         if x_axis == 'e':
-            exec_time_for_split.set_xlabel('epsilon value')
-        elif x_axis == 's':
-            exec_time_for_split.set_xlabel('number of sensors')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            fig.subplots_adjust(bottom=0.24)
+        rects = exec_time_for_split.bar(x_axis_values, exec_times[2], \
+            width=width, color='g', align='center')
+        autolabel(rects, exec_time_for_split, 0, 10)
+        exec_time_for_split.set_xlabel(x_label)
         exec_time_for_split.set_ylabel('execution time\nin microseconds')
         exec_time_for_split.set_title('Execution time\nfor splitting', \
             loc='center', pad=20, fontweight='bold')
-        fig.legend(labels=['irrespective of laplace or gaussian'], loc='lower center')
         if x_axis == 'e':
-            plt.savefig('plots/changing_epsilon/single/exec_time_graph_for_split.png', \
-                bbox_inches='tight')
+            fig.legend(labels=['irrespective of laplace or gaussian'], loc=legend_loc)
         elif x_axis == 's':
-            plt.savefig('plots/changing_sensor_count/single/exec_time_graph_for_split.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            exec_time_for_split.legend(labels=['irrespective of laplace or gaussian'], loc=legend_loc)
+        plt.savefig(plt_savefig_path + 'exec_time_graph_for_split.png', \
+            bbox_inches='tight')
         plt.show()
         fig, exec_time_noise_add_after_split = create_plot_single()
-        exec_time_noise_add_after_split.bar(x_axis_values, exec_times[3], \
-            width=width, color='g', align='center')
         if x_axis == 'e':
-            exec_time_noise_add_after_split.set_xlabel('epsilon value')
-        elif x_axis == 's':
-            exec_time_noise_add_after_split.set_xlabel('number of sensors')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            fig.subplots_adjust(bottom=0.24)
+        rects = exec_time_noise_add_after_split.bar(x_axis_values, exec_times[3], \
+            width=width, color='g', align='center')
+        autolabel(rects, exec_time_noise_add_after_split, 0, 10)
+        exec_time_noise_add_after_split.set_xlabel(x_label)
         exec_time_noise_add_after_split.set_ylabel('execution time\nin microseconds')
         exec_time_noise_add_after_split.set_title('Execution time\nfor noise addition after splitting', \
             loc='center', pad=20, fontweight='bold')
-        fig.legend(labels=['irrespective of laplace or gaussian'], loc='lower center')
         if x_axis == 'e':
-            plt.savefig('plots/changing_epsilon/single/exec_time_graph_noise_add_after_split.png', \
-                bbox_inches='tight')
+            fig.legend(labels=['irrespective of laplace or gaussian'], loc=legend_loc)
         elif x_axis == 's':
-            plt.savefig('plots/changing_sensor_count/single/exec_time_graph_noise_add_after_split.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            exec_time_noise_add_after_split.legend(labels=['irrespective of laplace or gaussian'], loc=legend_loc)
+        plt.savefig(plt_savefig_path + 'exec_time_graph_noise_add_after_split.png', \
+            bbox_inches='tight')
         plt.show()
         fig, exec_time_for_partial_summations = create_plot_single()
-        exec_time_for_partial_summations.bar(x_axis_values, exec_times[4], \
-            width=width, color='g', align='center')
         if x_axis == 'e':
-            exec_time_for_partial_summations.set_xlabel('epsilon value')
-        elif x_axis == 's':
-            exec_time_for_partial_summations.set_xlabel('number of sensors')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            fig.subplots_adjust(bottom=0.24)
+        rects = exec_time_for_partial_summations.bar(x_axis_values, exec_times[4], \
+            width=width, color='g', align='center')
+        autolabel(rects, exec_time_for_partial_summations, 0, 10)
+        exec_time_for_partial_summations.set_xlabel(x_label)
         exec_time_for_partial_summations.set_ylabel('execution time\nin microseconds')
         exec_time_for_partial_summations.set_title('Execution time\nfor partial summations', \
             loc='center', pad=20, fontweight='bold')
-        fig.legend(labels=['irrespective of laplace or gaussian'], loc='lower center')
         if x_axis == 'e':
-            plt.savefig('plots/changing_epsilon/single/exec_time_graph_for_partial_summations.png', \
-                bbox_inches='tight')
+            fig.legend(labels=['irrespective of laplace or gaussian'], loc=legend_loc)
         elif x_axis == 's':
-            plt.savefig('plots/changing_sensor_count/single/exec_time_graph_for_partial_summations.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            exec_time_for_partial_summations.legend(labels=['irrespective of laplace or gaussian'], loc=legend_loc)
+        plt.savefig(plt_savefig_path + 'exec_time_graph_for_partial_summations.png', \
+            bbox_inches='tight')
         plt.show()
         fig, exec_time_complete_algorithm = create_plot_single()
-        exec_time_complete_algorithm.bar(x_axis_values, exec_times[5], \
-            width=-width, color='b', align='edge')
-        exec_time_complete_algorithm.bar(x_axis_values, exec_times[6], \
-            width=width, color='r', align='edge')
         if x_axis == 'e':
-            exec_time_complete_algorithm.set_xlabel('epsilon value')
-        elif x_axis == 's':
-            exec_time_complete_algorithm.set_xlabel('number of sensors')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+            fig.subplots_adjust(bottom=0.28)
+        rects = exec_time_complete_algorithm.bar(x_axis_values, exec_times[5], \
+            width=-width, color='b', align='edge')
+        autolabel(rects, exec_time_complete_algorithm, 90, 10)
+        rects = exec_time_complete_algorithm.bar(x_axis_values, exec_times[6], \
+            width=width, color='r', align='edge')
+        autolabel(rects, exec_time_complete_algorithm, 90, 10)
+        exec_time_complete_algorithm.set_xlabel(x_label)
         exec_time_complete_algorithm.set_ylabel('execution time\nin microseconds')
         exec_time_complete_algorithm.set_title('Execution time\nfor complete algorithm', \
             loc='center', pad=20, fontweight='bold')
-        fig.legend(labels=['laplace', 'gaussian'], loc='lower center')
         if x_axis == 'e':
-            plt.savefig('plots/changing_epsilon/single/exec_time_graph_complete_algorithm.png', \
-                bbox_inches='tight')
+            fig.legend(labels=['laplace', 'gaussian'], loc=legend_loc)
         elif x_axis == 's':
-            plt.savefig('plots/changing_sensor_count/single/exec_time_graph_complete_algorithm.png', \
-                bbox_inches='tight')
+            exec_time_complete_algorithm.legend(labels=['laplace', 'gaussian'], loc=legend_loc)
+        plt.savefig(plt_savefig_path + 'exec_time_graph_complete_algorithm.png', \
+            bbox_inches='tight')
+        plt.show()
+    elif plot_mode == 'multiple':
+        plt.rcParams.update({'font.size': 10})
+        if x_axis == 'e':
+            plt_savefig_path = 'plots/changing_epsilon/multiple/'
+        elif x_axis == 's':
+            plt_savefig_path = 'plots/changing_sensor_count/multiple/'
         else:
             logging.error('Correct option for x-axis not provided to plot graphs')
             sys.exit(0)
-        plt.show()
-    elif plot_mode == 'multiple':
         fig = plt.figure(figsize=(14, 10))
-        fig.subplots_adjust(bottom=0.15, wspace=0.6, hspace=0.8)
+        fig.subplots_adjust(bottom=0.18, wspace=0.6, hspace=0.8)
         exec_time_noise_add_before_split = fig.add_subplot(231)
-        exec_time_noise_add_before_split.bar(x_axis_values, exec_times[0], \
+        rects = exec_time_noise_add_before_split.bar(x_axis_values, exec_times[0], \
             width=-width, color='b', align='edge')
-        exec_time_noise_add_before_split.bar(x_axis_values, exec_times[1], \
+        rects = exec_time_noise_add_before_split.bar(x_axis_values, exec_times[1], \
             width=width, color='r', align='edge')
         if x_axis == 'e':
             exec_time_noise_add_before_split.set_xlabel('epsilon value')
@@ -796,7 +709,7 @@ def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
         exec_time_noise_add_before_split.set_title('Execution time\nfor noise addition before splitting', \
             loc='center', pad=20, fontweight='bold')
         exec_time_for_split = fig.add_subplot(232)
-        exec_time_for_split.bar(x_axis_values, exec_times[2], \
+        rects = exec_time_for_split.bar(x_axis_values, exec_times[2], \
             width=width, color='g', align='center')
         if x_axis == 'e':
             exec_time_for_split.set_xlabel('epsilon value')
@@ -849,35 +762,28 @@ def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
         exec_time_complete_algorithm.set_ylabel('execution time\nin microseconds')
         exec_time_complete_algorithm.set_title('Execution time\nfor complete algorithm', \
             loc='center', pad=20, fontweight='bold')
-        fig.legend(labels=['laplace', 'gaussian'], loc='lower center')
-        if x_axis == 'e':
-            plt.savefig('plots/changing_epsilon/multiple/exec_time_graphs.png', \
-                bbox_inches='tight')
-        elif x_axis == 's':
-            plt.savefig('plots/changing_sensor_count/multiple/exec_time_graphs.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for x-axis not provided to plot graphs')
-            sys.exit(0)
+        fig.legend(labels=['laplace', 'gaussian', 'irrespective of laplace or gaussian'], loc='lower center')
+        plt.savefig(plt_savefig_path + 'exec_time_graphs.png', \
+            bbox_inches='tight')
         plt.show()
     else:
         logging.error('Correct option for plot mode not provided to plot graphs')
         sys.exit(0)
     '''
     graph 1 -> difference in execution time in microseconds vs number of 
-                sensors / epsilon
+                sensors
             -> noise addition before splitting - laplace and gaussian
     graph 2 -> difference in execution time in microseconds vs number of 
-                sensors / epsilon
+                sensors
             -> for splitting
     graph 3 -> difference in execution time in microseconds vs number of 
-                sensors / epsilon
+                sensors
             -> noise addition after splitting
     graph 4 -> difference in execution time in microseconds vs number of 
-                sensors / epsilon
+                sensors
             -> for partial summations
     graph 5 -> difference in execution time in microseconds vs number of 
-                sensors / epsilon
+                sensors
             -> complete algorithm - laplace and gaussian
     '''
     if len(x_axis_values) == max_sensor_count / sensor_count_step:
@@ -907,122 +813,108 @@ def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
             else str(x_axis_values[iterator - 1]) + '-' + str(value) \
             for iterator, value in enumerate(x_axis_values)][1:]
         if plot_mode == 'single':
+            plt.rcParams.update({'font.size': 20})
+            if x_axis == 's':
+                x_label = 'change in number of sensors'
+                plt_savefig_path = 'plots/changing_sensor_count/single/'
+            else:
+                logging.error('Correct option for x-axis not provided to plot graphs')
+                sys.exit(0)
             fig, time_diff_noise_add_before_split = create_plot_single()
-            time_diff_noise_add_before_split.bar(x_axis_values, \
+            fig.subplots_adjust(bottom=0.32)
+            rects = time_diff_noise_add_before_split.bar(x_axis_values, \
                 noise_add_before_split_gaussian_time_diff, \
                 width=-width, color='b', align='edge')
-            time_diff_noise_add_before_split.bar(x_axis_values, \
+            autolabel(rects, time_diff_noise_add_before_split, 90, 10)
+            rects = time_diff_noise_add_before_split.bar(x_axis_values, \
                 noise_add_before_split_laplace_time_diff, \
                 width=width, color='r', align='edge')
-            if x_axis == 's':
-                time_diff_noise_add_before_split.set_xlabel('change in number of sensors')
-                time_diff_noise_add_before_split.set_xticklabels(x_axis_values, \
-                    rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            autolabel(rects, time_diff_noise_add_before_split, 90, 10)
+            time_diff_noise_add_before_split.set_xlabel(x_label)
+            time_diff_noise_add_before_split.set_xticklabels(x_axis_values, \
+                rotation=(45))
             time_diff_noise_add_before_split.set_ylabel('difference in execution time\nin microseconds')
             time_diff_noise_add_before_split.set_title('Difference in execution time\nfor noise addition before splitting', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             fig.legend(labels=['laplace', 'gaussian'], loc='lower center')
-            if x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/exec_time_difference_graph_noise_add_before_split.png', \
+            plt.savefig(plt_savefig_path + 'exec_time_difference_graph_noise_add_before_split.png', \
                     bbox_inches='tight')
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
             plt.show()
             fig, time_diff_for_split = create_plot_single()
-            time_diff_for_split.bar(x_axis_values, for_split_time_diff, \
+            fig.subplots_adjust(bottom=0.28)
+            rects = time_diff_for_split.bar(x_axis_values, for_split_time_diff, \
                 width=width, color='g', align='center')
-            if x_axis == 's':
-                time_diff_for_split.set_xlabel('change in number of sensors')
-                time_diff_for_split.set_xticklabels(x_axis_values, rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            autolabel(rects, time_diff_for_split, 0, 10)
+            time_diff_for_split.set_xlabel(x_label)
+            time_diff_for_split.set_xticklabels(x_axis_values, rotation=(45))
             time_diff_for_split.set_ylabel('difference in execution time\nin microseconds')
             time_diff_for_split.set_title('Difference in execution time\nfor splitting', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             fig.legend(labels=['irrespective of laplace or gaussian'], loc='lower center')
-            if x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/exec_time_difference_graph_for_split.png', \
-                    bbox_inches='tight')
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            plt.savefig(plt_savefig_path + 'exec_time_difference_graph_for_split.png', \
+                bbox_inches='tight')
             plt.show()
             fig, time_diff_noise_add_after_split = create_plot_single()
-            time_diff_noise_add_after_split.bar(x_axis_values, \
+            fig.subplots_adjust(bottom=0.28)
+            rects = time_diff_noise_add_after_split.bar(x_axis_values, \
                 noise_add_after_split_time_diff, \
                 width=width, color='g', align='center')
-            if x_axis == 's':
-                time_diff_noise_add_after_split.set_xlabel('change in number of sensors')
-                time_diff_noise_add_after_split.set_xticklabels(x_axis_values, \
-                    rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            autolabel(rects, time_diff_noise_add_after_split, 0, 10)
+            time_diff_noise_add_after_split.set_xlabel(x_label)
+            time_diff_noise_add_after_split.set_xticklabels(x_axis_values, \
+                rotation=(45))
             time_diff_noise_add_after_split.set_ylabel('difference in execution time\nin microseconds')
             time_diff_noise_add_after_split.set_title('Difference in execution time\nfor noise addition after splitting', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             fig.legend(labels=['irrespective of laplace or gaussian'], loc='lower center')
-            if x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/exec_time_difference_graph_noise_add_after_split.png', \
-                    bbox_inches='tight')
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            plt.savefig(plt_savefig_path + 'exec_time_difference_graph_noise_add_after_split.png', \
+                bbox_inches='tight')
             plt.show()
             fig, time_diff_for_partial_summations = create_plot_single()
-            time_diff_for_partial_summations.bar(x_axis_values, \
+            fig.subplots_adjust(bottom=0.28)
+            rects = time_diff_for_partial_summations.bar(x_axis_values, \
                 for_partial_summations_time_diff, \
                 width=width, color='g', align='center')
-            if x_axis == 's':
-                time_diff_for_partial_summations.set_xlabel('change in number of sensors')
-                time_diff_for_partial_summations.set_xticklabels(x_axis_values, rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            autolabel(rects, time_diff_for_partial_summations, 0, 10)
+            time_diff_for_partial_summations.set_xlabel(x_label)
+            time_diff_for_partial_summations.set_xticklabels(x_axis_values, rotation=(45))
             time_diff_for_partial_summations.set_ylabel('difference in execution time\nin microseconds')
             time_diff_for_partial_summations.set_title('Difference in execution time\nfor partial summations', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             fig.legend(labels=['irrespective of laplace or gaussian'], loc='lower center')
-            if x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/exec_time_difference_graph_for_partial_summations.png', \
-                    bbox_inches='tight')
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            plt.savefig(plt_savefig_path + 'exec_time_difference_graph_for_partial_summations.png', \
+                bbox_inches='tight')
             plt.show()
             fig, time_diff_complete_algorithm = create_plot_single()
-            time_diff_complete_algorithm.bar(x_axis_values, \
+            fig.subplots_adjust(bottom=0.32)
+            rects = time_diff_complete_algorithm.bar(x_axis_values, \
                 complete_algorithm_laplace_time_diff, \
                 width=-width, color='b', align='edge')
-            time_diff_complete_algorithm.bar(x_axis_values, \
+            autolabel(rects, time_diff_complete_algorithm, 90, 10)
+            rects = time_diff_complete_algorithm.bar(x_axis_values, \
                 complete_algorithm_gaussian_time_diff, \
                 width=width, color='r', align='edge')
-            if x_axis == 's':
-                time_diff_complete_algorithm.set_xlabel('change in number of sensors')
-                time_diff_complete_algorithm.set_xticklabels(x_axis_values, \
-                    rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            autolabel(rects, time_diff_complete_algorithm, 90, 10)
+            time_diff_complete_algorithm.set_xlabel(x_label)
+            time_diff_complete_algorithm.set_xticklabels(x_axis_values, \
+                rotation=(45))
             time_diff_complete_algorithm.set_ylabel('difference in execution time\nin microseconds')
             time_diff_complete_algorithm.set_title('Difference in execution time\nfor complete algorithm', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             fig.legend(labels=['laplace', 'gaussian'], loc='lower center')
+            plt.savefig(plt_savefig_path + 'exec_time_difference_graph_complete_algorithm.png', \
+                bbox_inches='tight')
+            plt.show()
+        elif plot_mode == 'multiple':
+            plt.rcParams.update({'font.size': 10})
             if x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/single/exec_time_difference_graph_complete_algorithm.png', \
-                    bbox_inches='tight')
+                x_label = 'change in number of sensors'
+                plt_savefig_path = 'plots/changing_sensor_count/multiple/'
             else:
                 logging.error('Correct option for x-axis not provided to plot graphs')
                 sys.exit(0)
-            plt.show()
-        elif plot_mode == 'multiple':
             fig = plt.figure(figsize=(14, 10))
-            fig.subplots_adjust(bottom=0.2, wspace=0.6, hspace=0.7)
+            fig.subplots_adjust(bottom=0.22, wspace=0.6, hspace=0.7)
             time_diff_noise_add_before_split = fig.add_subplot(231)
             time_diff_noise_add_before_split.bar(x_axis_values, \
                 noise_add_before_split_gaussian_time_diff, \
@@ -1030,55 +922,39 @@ def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
             time_diff_noise_add_before_split.bar(x_axis_values, \
                 noise_add_before_split_laplace_time_diff, \
                 width=width, color='r', align='edge')
-            if x_axis == 's':
-                time_diff_noise_add_before_split.set_xlabel('change in number of sensors')
-                time_diff_noise_add_before_split.set_xticklabels(x_axis_values, \
-                    rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            time_diff_noise_add_before_split.set_xlabel(x_label)
+            time_diff_noise_add_before_split.set_xticklabels(x_axis_values, \
+                rotation=(45))
             time_diff_noise_add_before_split.set_ylabel('difference in execution time\nin microseconds')
             time_diff_noise_add_before_split.set_title('Difference in execution time\nfor noise addition before splitting', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             time_diff_for_split = fig.add_subplot(232)
             time_diff_for_split.bar(x_axis_values, for_split_time_diff, \
                 width=width, color='g', align='center')
-            if x_axis == 's':
-                time_diff_for_split.set_xlabel('change in number of sensors')
-                time_diff_for_split.set_xticklabels(x_axis_values, rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            time_diff_for_split.set_xlabel(x_label)
+            time_diff_for_split.set_xticklabels(x_axis_values, rotation=(45))
             time_diff_for_split.set_ylabel('difference in execution time\nin microseconds')
             time_diff_for_split.set_title('Difference in execution time\nfor splitting', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             time_diff_noise_add_after_split = fig.add_subplot(233)
             time_diff_noise_add_after_split.bar(x_axis_values, \
                 noise_add_after_split_time_diff, \
                 width=width, color='g', align='center')
-            if x_axis == 's':
-                time_diff_noise_add_after_split.set_xlabel('change in number of sensors')
-                time_diff_noise_add_after_split.set_xticklabels(x_axis_values, \
-                    rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            time_diff_noise_add_after_split.set_xlabel(x_label)
+            time_diff_noise_add_after_split.set_xticklabels(x_axis_values, \
+                rotation=(45))
             time_diff_noise_add_after_split.set_ylabel('difference in execution time\nin microseconds')
             time_diff_noise_add_after_split.set_title('Difference in execution time\nfor noise addition after splitting', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             time_diff_for_partial_summations = fig.add_subplot(234)
             time_diff_for_partial_summations.bar(x_axis_values, \
                 for_partial_summations_time_diff, \
                 width=width, color='g', align='center')
-            if x_axis == 's':
-                time_diff_for_partial_summations.set_xlabel('change in number of sensors')
-                time_diff_for_partial_summations.set_xticklabels(x_axis_values, rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            time_diff_for_partial_summations.set_xlabel(x_label)
+            time_diff_for_partial_summations.set_xticklabels(x_axis_values, rotation=(45))
             time_diff_for_partial_summations.set_ylabel('difference in execution time\nin microseconds')
             time_diff_for_partial_summations.set_title('Difference in execution time\nfor partial summations', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
+                loc='center', pad=10, fontweight='bold')
             time_diff_complete_algorithm = fig.add_subplot(235)
             time_diff_complete_algorithm.bar(x_axis_values, \
                 complete_algorithm_laplace_time_diff, \
@@ -1086,23 +962,15 @@ def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
             time_diff_complete_algorithm.bar(x_axis_values, \
                 complete_algorithm_gaussian_time_diff, \
                 width=width, color='r', align='edge')
-            if x_axis == 's':
-                time_diff_complete_algorithm.set_xlabel('change in number of sensors')
-                time_diff_complete_algorithm.set_xticklabels(x_axis_values, \
-                    rotation=(45))
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+            time_diff_complete_algorithm.set_xlabel(x_label)
+            time_diff_complete_algorithm.set_xticklabels(x_axis_values, \
+                rotation=(45))
             time_diff_complete_algorithm.set_ylabel('difference in execution time\nin microseconds')
             time_diff_complete_algorithm.set_title('Difference in execution time\nfor complete algorithm', \
-                loc='center', pad=10, fontsize=10, fontweight='bold')
-            fig.legend(labels=['laplace', 'gaussian'], loc='lower center')
-            if x_axis == 's':
-                plt.savefig('plots/changing_sensor_count/multiple/exec_time_difference_graphs.png', \
-                    bbox_inches='tight')
-            else:
-                logging.error('Correct option for x-axis not provided to plot graphs')
-                sys.exit(0)
+                loc='center', pad=10, fontweight='bold')
+            fig.legend(labels=['laplace', 'gaussian', 'irrespective of laplace or gaussian'], loc='lower center')
+            plt.savefig(plt_savefig_path + 'exec_time_difference_graphs.png', \
+                bbox_inches='tight')
             plt.show()
         else:
             logging.error('Correct option for plot mode not provided to plot graphs')
@@ -1110,31 +978,40 @@ def plot_exec_time_graphs(exec_times, x_axis_values, x_axis, plot_mode):
 
 def plot_heart_rate_graphs(heart_rate_values, x_axis_values, operation, x_axis):
     '''
-    graph 1 -> heart rate in centimeters vs number of sensors / epsilon
+    graph 1 -> heart rate in centimeters vs number of sensors / epsilon values
             -> heart rate - actual, central and split laplace noised and gaussian
                noised
     '''
+    plt.rcParams.update({'font.size': 10})
     if len(x_axis_values) == (max_epsilon / epsilon_step) + 1:
         width = 0.05
     elif len(x_axis_values) == max_sensor_count / sensor_count_step:
-        width = 0.75
+        width = 1.25
     else:
         width = 0.4
     fig, heart_rate = create_plot_single()
-    heart_rate.bar([value - (width * 1.5) for value in x_axis_values], \
+    fig.subplots_adjust(bottom=0.25)
+    rects = heart_rate.bar([value - (width * 1.5) for value in x_axis_values], \
         heart_rate_values[0], width=-width, color='b', align='edge')
-    heart_rate.bar([value - (width * 0.5) for value in x_axis_values], \
+    autolabel(rects, heart_rate, 90, 5)
+    rects = heart_rate.bar([value - (width * 0.5) for value in x_axis_values], \
         heart_rate_values[1], width=-width, color='r', align='edge')
-    heart_rate.bar(x_axis_values, heart_rate_values[2], \
+    autolabel(rects, heart_rate, 90, 5)
+    rects = heart_rate.bar(x_axis_values, heart_rate_values[2], \
         width=width, color='g', align='center')
-    heart_rate.bar([value + (width * 0.5) for value in x_axis_values], \
+    autolabel(rects, heart_rate, 90, 5)
+    rects = heart_rate.bar([value + (width * 0.5) for value in x_axis_values], \
         heart_rate_values[3], width=width, color='y', align='edge')
-    heart_rate.bar([value + (width * 1.5) for value in x_axis_values], \
+    autolabel(rects, heart_rate, 90, 5)
+    rects = heart_rate.bar([value + (width * 1.5) for value in x_axis_values], \
         heart_rate_values[4], width=width, color='k', align='edge')
+    autolabel(rects, heart_rate, 90, 5)
     if x_axis == 'e':
         heart_rate.set_xlabel('epsilon value')
+        plt_savefig_path = 'plots/changing_epsilon/'
     elif x_axis == 's':
         heart_rate.set_xlabel('number of sensors')
+        plt_savefig_path = 'plots/changing_sensor_count/'
     else:
         logging.error('Correct option for x-axis not provided to plot graphs')
         sys.exit(0)
@@ -1144,28 +1021,14 @@ def plot_heart_rate_graphs(heart_rate_values, x_axis_values, operation, x_axis):
         'central method laplace', 'central method gaussian', \
         'split method laplace', 'split method gaussian'], \
         loc='lower center')
-    if x_axis == 'e':
-        if operation == 's':
-            plt.savefig('plots/changing_epsilon/heart_rate_graphs.png', \
-                bbox_inches='tight')
-        elif operation == 'a':
-            plt.savefig('plots/changing_epsilon/heart_rate_graphs_new.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for operation not provided to plot graphs')
-            sys.exit(0)
-    elif x_axis == 's':
-        if operation == 's':
-            plt.savefig('plots/changing_sensor_count/heart_rate_graphs.png', \
-                bbox_inches='tight')
-        elif operation == 'a':
-            plt.savefig('plots/changing_sensor_count/heart_rate_graphs_new.png', \
-                bbox_inches='tight')
-        else:
-            logging.error('Correct option for operation not provided to plot graphs')
-            sys.exit(0)
+    if operation == 's':
+        plt.savefig(plt_savefig_path + 'heart_rate_graphs.png', \
+            bbox_inches='tight')
+    elif operation == 'a':
+        plt.savefig(plt_savefig_path + 'heart_rate_graphs_new.png', \
+            bbox_inches='tight')
     else:
-        logging.error('Correct option for x-axis not provided to plot graphs')
+        logging.error('Correct option for operation not provided to plot graphs')
         sys.exit(0)
     if operation == 's':
         plt.show()
@@ -1275,7 +1138,7 @@ if __name__ == '__main__':
         sys.exit(0)
     heart_rate_values.append([value_1 + value_2 for value_1, value_2 in zip(heart_rate_values_partial_1[1], heart_rate_values_partial_2[1])])
     heart_rate_values.append([value_1 + value_2 for value_1, value_2 in zip(heart_rate_values_partial_1[2], heart_rate_values_partial_2[2])])
-    exec_times = [[(value_1 + value_2) / 2 for value_1, value_2 in zip(list_1, list_2)] for list_1, list_2 in zip(exec_times_1, exec_times_2)]
+    exec_times = [[int((value_1 + value_2) / 2) for value_1, value_2 in zip(list_1, list_2)] for list_1, list_2 in zip(exec_times_1, exec_times_2)]
     logging.debug('heart_rate_values -> ' + str(heart_rate_values))
     mape_utility_laplace, mape_utility_gaussian, \
         smape_utility_laplace, smape_utility_gaussian, \
@@ -1356,11 +1219,30 @@ if __name__ == '__main__':
     logging.debug('mmape_utility_laplace_new -> ' + str(mmape_utility_laplace_new))
     logging.debug('mmape_utility_gaussian_new -> ' + str(mmape_utility_gaussian_new))
     if ve == 'yes':
-        excel_writer = ExcelWriter('analysis/analysis_ve.xlsx')
+        log_for_paper_filename = 'logs_for_paper/heart_rate_miband2_xd58c_data_changing_epsilon.log'
     elif vscnt == 'yes':
-        excel_writer = ExcelWriter('analysis/analysis_vscnt.xlsx')
+        log_for_paper_filename = 'logs_for_paper/heart_rate_miband2_xd58c_data_changing_sensor_count.log'
     else:
-        excel_writer = ExcelWriter('analysis/analysis.xlsx')
+        log_for_paper_filename = 'logs_for_paper/heart_rate_miband2_xd58c_data.log'
+    with open(log_for_paper_filename, 'w') as log_for_paper_data_file:
+        if ve == 'yes':
+            log_for_paper_data_file.write(str(epsilon_values) + '\n')
+        elif vscnt == 'yes':
+            log_for_paper_data_file.write(str(sensor_count_values) + '\n')
+        if mape_utility_laplace_new is not None and mape_utility_gaussian_new is not None:
+            log_for_paper_data_file.write(str(mape_utility_laplace_new) + '\n')
+            log_for_paper_data_file.write(str(mape_utility_gaussian_new) + '\n')
+        log_for_paper_data_file.write(str(smape_utility_laplace_new) + '\n')
+        log_for_paper_data_file.write(str(smape_utility_gaussian_new) + '\n')
+        log_for_paper_data_file.write(str(mmape_utility_laplace_new) + '\n')
+        log_for_paper_data_file.write(str(mmape_utility_gaussian_new) + '\n')
+        log_for_paper_data_file.write(str(exec_times))
+    if ve == 'yes':
+        excel_writer = ExcelWriter('analysis/analysis_ve.xlsx', engine='xlsxwriter')
+    elif vscnt == 'yes':
+        excel_writer = ExcelWriter('analysis/analysis_vscnt.xlsx', engine='xlsxwriter')
+    else:
+        excel_writer = ExcelWriter('analysis/analysis.xlsx', engine='xlsxwriter')
     print('\nHeart rate values for the summation operation ->\n')
     heart_rate_values_summation_data = OrderedDict()
     if ve == 'yes':
@@ -1404,11 +1286,13 @@ if __name__ == '__main__':
     else:
         logging.info('Neither epsilon nor sensor count varied')
         sys.exit(0)
-    execution_times['Noise Addition before Splitting'] = exec_times[0]
-    execution_times['Splitting'] = exec_times[1]
-    execution_times['Noise Addition after Splitting'] = exec_times[2]
-    execution_times['Partial Summations'] = exec_times[3]
-    execution_times['Complete Algorithm'] = exec_times[4]
+    execution_times['Noise Addition before Splitting Laplace'] = exec_times[0]
+    execution_times['Noise Addition before Splitting Gaussian'] = exec_times[1]
+    execution_times['Splitting'] = exec_times[2]
+    execution_times['Noise Addition after Splitting'] = exec_times[3]
+    execution_times['Partial Summations'] = exec_times[4]
+    execution_times['Complete Algorithm Laplace'] = exec_times[5]
+    execution_times['Complete Algorithm Gaussian'] = exec_times[6]
     df = pd.DataFrame(execution_times)
     print(df)
     df.to_excel(excel_writer, 'Exec Times (us) -> Sum or Avg')
